@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load humanize %} {# <-- Load tag 'humanize' untuk format harga yang lebih baik #}
+{% load widget_tweaks %}
+
+{% block title %}Reservasi Saya - {{ profile.name }}{% endblock %}
+
+{% block content %}
+<div class="bg-white p-6 md:p-8 rounded-lg shadow-xl">
+    <h1 class="text-3xl font-bold text-indigo-700 mb-2">Riwayat Pesanan Saya</h1>
+    <p class="text-gray-500 mb-8">Berikut adalah daftar semua reservasi yang telah Anda buat.</p>
+
+    {% if reservations %}
+        <div class="overflow-x-auto border border-gray-200 rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detail Pesanan</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Tamu</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for reservation in reservations %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-semibold text-gray-900">{{ reservation.reservation_date|date:"d F Y" }} - {{ reservation.reservation_time|time:"H:i" }}</div>
+                            <div class="text-sm text-gray-500 mt-1">
+                                <!-- MENAMPILKAN INFO RUANGAN -->
+                                <span class="font-medium">Ruangan:</span> 
+                                {% if reservation.room_type %}
+                                    {{ reservation.room_type.name }}
+                                {% else %}
+                                    <span class="text-red-500">N/A</span>
+                                {% endif %}
+                            </div>
+                            <div class="text-sm text-gray-500 mt-1">
+                                <!-- MENAMPILKAN INFO PAKET MAKANAN -->
+                                <span class="font-medium">Paket:</span>
+                                {% if reservation.food_package %}
+                                    {{ reservation.food_package.name }} 
+                                    <span class="text-gray-400">(Rp{{ reservation.food_package.price|intcomma }})</span>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">{{ reservation.number_of_guests }} orang</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            {% if reservation.status == 'CONFIRMED' %} bg-green-100 text-green-800
+                            {% elif reservation.status == 'PENDING' %} bg-yellow-100 text-yellow-800
+                            {% elif reservation.status == 'WAITLISTED' %} bg-blue-100 text-blue-800
+                            {% elif reservation.status == 'CANCELLED' %} bg-red-100 text-red-800
+                            {% elif reservation.status == 'COMPLETED' %} bg-gray-100 text-gray-800
+                            {% endif %}">
+                            {{ reservation.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            {# Hanya tampilkan opsi batalkan jika statusnya memungkinkan #}
+                            {% if reservation.status == 'PENDING' or reservation.status == 'CONFIRMED' or reservation.status == 'WAITLISTED' %}
+                                {% now "Y-m-d" as todays_date_iso %}
+                                {% now "H:i:s" as current_time_iso %}
+                                {% with reservation_date_iso=reservation.reservation_date|date:"Y-m-d" reservation_time_iso=reservation.reservation_time|time:"H:i:s" %}
+                                    {% if reservation_date_iso > todays_date_iso or reservation_date_iso == todays_date_iso and reservation_time_iso > current_time_iso %}
+                                        <a href="{% url 'reservasi:cancel_reservation' reservation.id %}" class="text-red-600 hover:text-red-800">
+                                            {% if reservation.status == 'WAITLISTED' %}Batalkan Waitlist{% else %}Batalkan{% endif %}
+                                        </a>
+                                    {% else %}
+                                        <span class="text-gray-400">Tidak bisa dibatalkan</span>
+                                    {% endif %}
+                                {% endwith %}
+                            {% else %}
+                                <span class="text-gray-400">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="text-center py-12 px-6 border-2 border-dashed border-gray-300 rounded-lg">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">Tidak Ada Riwayat Pesanan</h3>
+            <p class="mt-1 text-sm text-gray-500">Anda belum pernah membuat reservasi.</p>
+        </div>
+    {% endif %}
+
+    <div class="mt-8 text-center">
+        <a href="{% url 'reservasi:create_reservation' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">
+            Buat Reservasi Baru
+        </a>
+    </div>
+</div>
+{% endblock %}

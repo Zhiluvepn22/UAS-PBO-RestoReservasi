@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Reservasi Berhasil{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-green-100 py-8">
+  <div class="w-full max-w-xl bg-white/90 p-10 rounded-3xl shadow-2xl border border-gray-200 text-center">
+    {% if reservation.status == 'WAITLISTED' %}
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-yellow-500 mx-auto mb-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <h1 class="text-4xl font-extrabold mb-4 bg-gradient-to-r from-yellow-500 via-indigo-400 to-green-400 bg-clip-text text-transparent drop-shadow-lg">Anda dalam Waiting List!</h1>
+      <p class="text-gray-700 mb-6">
+        Terima kasih, {{ reservation.guest_name }}. Slot waktu yang Anda inginkan saat ini penuh.
+        Anda telah berhasil dimasukkan ke dalam waiting list untuk tanggal 
+        <strong>{{ reservation.reservation_date|date:"d F Y" }}</strong> pukul <strong>{{ reservation.reservation_time|time:"H:i" }}</strong>
+        untuk <strong>{{ reservation.number_of_guests }}</strong> orang.
+      </p>
+      <p class="text-gray-600 mb-6">Kami akan menghubungi Anda jika ada slot yang tersedia.</p>
+    {% else %}
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-green-500 mx-auto mb-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <h1 class="text-4xl font-extrabold mb-4 bg-gradient-to-r from-green-500 via-indigo-400 to-green-400 bg-clip-text text-transparent drop-shadow-lg">Reservasi Diterima!</h1>
+      <p class="text-gray-700 mb-6">
+        Terima kasih, {{ reservation.guest_name }}! Reservasi Anda telah kami terima.
+      </p>
+      <div class="bg-gray-100/80 p-6 rounded-xl text-left mb-6 border border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-700 mb-3">Detail Reservasi:</h2>
+        <ul class="space-y-1 text-gray-700">
+          <li><strong>ID Reservasi:</strong> RES-{{ reservation.id }}</li>
+          <li><strong>Tanggal:</strong> {{ reservation.reservation_date|date:"l, d F Y" }}</li>
+          <li><strong>Waktu:</strong> {{ reservation.reservation_time|time:"H:i" }}</li>
+          <li><strong>Jumlah Tamu:</strong> {{ reservation.number_of_guests }} orang</li>
+          {% if reservation.special_requests %}
+          <li><strong>Permintaan Khusus:</strong> {{ reservation.special_requests }}</li>
+          {% endif %}
+          <li><strong>Status:</strong> <span class="font-semibold
+            {% if reservation.status == 'CONFIRMED' %}text-green-600
+            {% elif reservation.status == 'PENDING' %}text-yellow-600
+            {% else %}text-gray-600{% endif %}">
+            {{ reservation.get_status_display }}
+            </span>
+          </li>
+        </ul>
+      </div>
+      {% if reservation.status == 'PENDING' %}
+      <p class="text-yellow-700 font-semibold mb-6">Reservasi Anda sedang menunggu konfirmasi dari pihak restoran. Kami akan segera menghubungi Anda.</p>
+      {% elif reservation.status == 'CONFIRMED' %}
+      <p class="text-green-700 font-semibold mb-6">Reservasi Anda telah DIKONFIRMASI. Sampai jumpa!</p>
+      {% endif %}
+    {% endif %}
+    <a href="{% url 'reservasi:home' %}" class="inline-block bg-gradient-to-r from-indigo-600 to-green-500 hover:from-indigo-700 hover:to-green-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg text-lg transition-all duration-200 mt-2">
+      Kembali ke Beranda
+    </a>
+  </div>
+</div>
+{% endblock %}

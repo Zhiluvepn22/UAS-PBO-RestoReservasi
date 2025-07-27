@@ -1,0 +1,1 @@
+.\resenv\Scripts\activate

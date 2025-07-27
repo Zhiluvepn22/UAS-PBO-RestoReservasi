@@ -1,0 +1,21 @@
+username: alfina
+password: 12345678
+
+user
+
+username: pinpinn
+password: Pin12345
+
+https://github.com/Zhiluvepn22/UAS-PBO-RestoReservasi.git
+
+echo "# UAS-PBO-RestoReservasi" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/Zhiluvepn22/UAS-PBO-RestoReservasi.git
+git push -u origin main
+
+git remote add origin https://github.com/Zhiluvepn22/UAS-PBO-RestoReservasi.git
+git branch -M main
+git push -u origin main

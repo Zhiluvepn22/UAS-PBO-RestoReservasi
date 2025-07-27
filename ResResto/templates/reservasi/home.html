@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ profile.name }} - Beranda{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-green-50 py-6">
+  <div class="w-full max-w-4xl bg-white/95 p-8 rounded-2xl shadow-lg backdrop-blur-sm border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+    <header class="text-center mb-10 animate-fade-in">
+      <h1 class="text-4xl font-bold mb-3 bg-gradient-to-r from-indigo-600 via-green-500 to-indigo-400 bg-clip-text text-transparent">
+        {{ profile.name|default:"Selamat Datang!" }}
+      </h1>
+      <p class="text-lg text-gray-600 font-light">{{ profile.description|default:"Pesan tempat Anda sekarang dan nikmati pengalaman kuliner terbaik." }}</p>
+    </header>
+    
+    <div class="grid md:grid-cols-2 gap-8 mb-10 items-start">
+      <div class="group">
+        <div class="overflow-hidden rounded-xl shadow-md">          
+            <img src="{% static 'img/resto.jpg' %}" alt="Interior Restoran" 
+               class="w-full h-64 object-cover transform transition-all duration-500 group-hover:scale-110">
+        </div>
+      </div>
+      
+      <div class="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
+        <h2 class="text-2xl font-medium text-gray-800 mb-4 flex items-center gap-2">
+          <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7"/>
+          </svg>
+          Informasi Restoran
+        </h2>
+        
+        <ul class="space-y-3 text-gray-600 text-base">
+          <li class="flex items-center gap-3 hover:text-gray-800 transition-colors duration-200">
+            <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 12.414a4 4 0 1 0-5.657 5.657l4.243 4.243a8 8 0 1 1 5.657-5.657z"/>
+            </svg>
+            <span class="font-medium">Alamat:</span> {{ profile.address|default:"Belum diatur" }}
+          </li>
+          <li class="flex items-center gap-3 hover:text-gray-800 transition-colors duration-200">
+            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h2l.4 2M7 13h10l4-8H5.4M7 13l-1.35 2.7a1 1 0 0 0 .9 1.45h12.2a1 1 0 0 0 .9-1.45L17 13"/>
+            </svg>
+            <span class="font-medium">Telepon:</span> {{ profile.phone_number|default:"Belum diatur" }}
+          </li>
+          <li class="flex items-center gap-3 hover:text-gray-800 transition-colors duration-200">
+            <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+            </svg>
+            <span class="font-medium">Jam Buka:</span> {{ profile.opening_time|time:"H:i" }} - {{ profile.closing_time|time:"H:i" }}
+          </li>
+          <li class="flex items-center gap-3 hover:text-gray-800 transition-colors duration-200">
+            <svg class="w-4 h-4 text-pink-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2h5"/>
+            </svg>
+            <span class="font-medium">Kapasitas:</span> {{ profile.max_guests_per_slot }} tamu per slot
+          </li>
+          <li class="flex items-center gap-3 hover:text-gray-800 transition-colors duration-200">
+            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+            </svg>
+            <span class="font-medium">Interval:</span> {{ profile.slot_interval_minutes }} menit
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="text-center">
+      <a href="{% url 'reservasi:create_reservation' %}" 
+         class="inline-flex items-center px-8 py-3 text-lg font-medium text-white bg-gradient-to-r from-indigo-600 to-green-500 rounded-lg shadow-md hover:from-indigo-700 hover:to-green-600 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2">
+        <span>Reservasi Meja Sekarang</span>
+        <svg class="w-5 h-5 ml-2 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+</style>
+{% endblock %}

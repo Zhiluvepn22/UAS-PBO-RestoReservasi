@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservasi Restoran</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar (opsional) */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal flex flex-col min-h-screen">
+
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex space-x-4 items-center">
+                    <div>
+                        <a href="{% url 'reservasi:home' %}" class="flex items-center py-5 px-2 text-gray-700 hover:text-gray-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v11.494m0 0a8.485 8.485 0 001.684.162 8.485 8.485 0 001.683-.162m-3.367 0c1.033 0 2.05-.296 2.89-.836M9.109 6.253a8.485 8.485 0 011.684.162m-1.684-.162a8.485 8.485 0 00-1.683-.162m3.367 0c-1.033 0-2.05-.296-2.89-.836m5.78 11.494c1.134 0 2.227-.376 3.111-1.03M3.269 17.747A8.485 8.485 0 005 18.253m0-11.5a8.485 8.485 0 00-1.731.506m0 0A8.485 8.485 0 003.27 6.253m11.46 0a8.485 8.485 0 011.73.506M12 21.75a8.485 8.485 0 002.89-.836M9.11 21.75a8.485 8.485 0 01-2.89-.836M7.253 3.269A8.485 8.485 0 017.76 5M16.747 3.27A8.485 8.485 0 0016.24 5m-9.487 13.04a8.485 8.485 0 00-.506-1.731m9.487 0a8.485 8.485 0 01-.506-1.731M5.753 7.76A8.485 8.485 0 015.247 6m13.506 1.76a8.485 8.485 0 00.506-1.76M7.76 16.247a8.485 8.485 0 01-1.731-.506m10.963-.506a8.485 8.485 0 00-1.731.506" />
+                            </svg>                                  
+                            <span class="font-bold">Resto Reservasi</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- Navigasi Kanan -->
+                <div class="flex items-center space-x-2">
+                    <a href="{% url 'reservasi:create_reservation' %}" class="py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm transition duration-300">Buat Reservasi</a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'reservasi:my_reservations' %}" class="py-2 px-3 hover:text-indigo-600 text-gray-700 rounded-md text-sm">Reservasi Saya</a>
+                        <form method="post" action="{% url 'reservasi:logout' %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="py-2 px-3 hover:text-indigo-600 text-gray-700 rounded-md text-sm">Logout</button>
+                        </form>
+                        {% if user.is_staff %}
+                            <a href="{% url 'admin:index' %}" class="py-2 px-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md text-sm">Admin</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'reservasi:login' %}" class="py-2 px-3 hover:text-indigo-600 text-gray-700 rounded-md text-sm">Login</a>
+                        <a href="{% url 'reservasi:register' %}" class="py-2 px-3 bg-green-500 hover:bg-green-600 text-white rounded-md text-sm">Register</a>
+                    {% endif %}
+                </div>
+                <!-- Navigasi Kanan -->
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto mt-8 p-4 flex-grow">
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="p-4 rounded-md 
+                        {% if message.tags == 'success' %} bg-green-100 border border-green-400 text-green-700
+                        {% elif message.tags == 'error' %} bg-red-100 border border-red-400 text-red-700
+                        {% elif message.tags == 'warning' %} bg-yellow-100 border border-yellow-400 text-yellow-700
+                        {% else %} bg-blue-100 border border-blue-400 text-blue-700 {% endif %}"
+                        role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center p-4 mt-auto">
+        <p>© {% now "Y" %} {{ profile.name|default:"Nama Restoran Anda" }}. All rights reserved.</p>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
