@@ -25,15 +25,15 @@ ResResto adalah aplikasi web yang dibangun menggunakan Django untuk mengelola re
 
 1.  **Clone repository ini:**
     ```bash
-    git clone <URL_REPOSITORY_ANDA>
-    cd <NAMA_DIREKTORI_PROYEK>
+    git clone https://github.com/Zhiluvepn22/UAS-PBO-RestoReservasi.git
+    cd ResResto
     ```
 
 2.  **Buat dan aktifkan virtual environment:**
     ```bash
     python -m venv venv
     # Windows
-    venv\\Scripts\\activate
+    venv\Scripts\activate
     # macOS/Linux
     source venv/bin/activate
     ```
